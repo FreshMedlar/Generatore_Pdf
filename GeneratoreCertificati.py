@@ -200,5 +200,3 @@ for i in range(len(value_range)):
 # output_name = 'prova.docx' # f'{str(context["nome"])}_{str(context["cognome"])}_progetto_edizione_.docx'  # f'{str(context[list(context.keys())[0]])}_{str(context[list(context.keys())[1]])}_progetto_edizione_.docx'
 # doc.render(context)
 # doc.save(output_name)
-# print('Stampata')
-
