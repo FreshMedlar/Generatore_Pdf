@@ -1,7 +1,6 @@
 from codicefiscale import codicefiscale
-from logging import root
+
 import os, sys
-from xml.dom.minidom import Document
 
 from docxtpl import DocxTemplate # docx
 import xlwings as xw # excel 
