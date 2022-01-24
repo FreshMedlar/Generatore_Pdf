@@ -100,7 +100,7 @@ firma_btn.grid(column=0, row=3)
 # entry codice progetto
 entry_project = tk.Entry(root)
 entry_project.grid(column=2, row=0)
-project_lbl = tk.Label(root, text="Nome Progetto")
+project_lbl = tk.Label(root, text="Progetto")
 project_lbl.grid(column=1, row=0)
 
 # entry edizione
@@ -118,7 +118,7 @@ release_lbl.grid(column=1, row=2)
 # entry corso
 entry_corso = tk.Entry(root)
 entry_corso.grid(column=2, row=3)
-corso_lbl = tk.Label(root, text="Corso")
+corso_lbl = tk.Label(root, text="Nome Corso")
 corso_lbl.grid(column=1, row=3)
 
 # entry durata
@@ -149,13 +149,13 @@ root.mainloop()
 wb = xw.Book(excel)
 sht = wb.sheets['elenco']
 
-# first_column = sht.range('A1').expand('down').value
-# print(first_column)
-# for i in range(len(sht.range('A1').expand('down').value)):
-#     if first_column[i] == 'nome':
-#         initial_row= i
+first_column = sht.range('A1').expand('down').value
+print(first_column)
+for i in range(len(sht.range('A1').expand('down').value)):
+    if first_column[i] == 'nome':
+        initial_row= i
 
-# breakpoint()
+breakpoint()
 
 first_row = sht.range('A1:C1').value # sht.range('A1').expand('right').value # chiavi del dizionario
 value_range = sht.range('A2').expand('table').value # lista di rows dalla seconda
