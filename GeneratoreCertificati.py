@@ -1,4 +1,4 @@
-from importlib.resources import path
+
 from codicefiscale import codicefiscale
 
 import os, sys
@@ -155,10 +155,11 @@ for i in range(len(sht.range('A1').expand('down').value)):
     if first_column[i] == 'nome':
         initial_row= i
 
+
 breakpoint()
 
-first_row = sht.range('A1:C1').value # sht.range('A1').expand('right').value # chiavi del dizionario
-value_range = sht.range('A2').expand('table').value # lista di rows dalla seconda
+first_row = sht.range(f'A{str(initial_row+1)}:C{str(initial_row+1)}').value # sht.range('A1').expand('right').value # chiavi del dizionario
+value_range = sht.range(f'A{str(initial_row+2)}').expand('table').value # lista di rows dalla seconda
 
 ## 0-nome
 ## 1-cognome
