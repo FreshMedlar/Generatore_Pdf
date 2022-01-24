@@ -1,6 +1,6 @@
 
 from codicefiscale import codicefiscale
-
+from datetime import datetime
 import os, sys
 
 from docxtpl import DocxTemplate # docx
@@ -14,6 +14,9 @@ import win32com.client as win32
 # excel = r'C:\Users\medlar\Desktop\progetto_gabellone\MODELLO FARC partecipanti_da_importare.xlsx'
 # template = r'C:\Users\medlar\Desktop\progetto_gabellone\Attestato base logo SIF.docx'
 
+template = "Attestato base logo SIF.docx"
+month = list("ABCDEHLMPRST")
+
 # base bianca
 logo = 'bianco.png'
 firma =  'bianco.png' 
@@ -24,6 +27,49 @@ durata= ""
 inizio = ""
 fine  = ""
 corso= ""
+
+_CONSONANTS = list("bcdfghjklmnpqrstvwxyz")
+_VOWELS = list("aeiou")
+
+_OMOCODIA = {
+    "0": "L",
+    "1": "M",
+    "2": "N",
+    "3": "P",
+    "4": "Q",
+    "5": "R",
+    "6": "S",
+    "7": "T",
+    "8": "U",
+    "9": "V",
+}
+maketrans = "".maketrans
+_OMOCODIA_DIGITS = "".join([digit for digit in _OMOCODIA])
+_OMOCODIA_LETTERS = "".join([_OMOCODIA[digit] for digit in _OMOCODIA])
+_OMOCODIA_DECODE_TRANS = maketrans(_OMOCODIA_LETTERS, _OMOCODIA_DIGITS)
+
+def birth():
+    
+    birthdate_year = codicefiscale.decode(context["codicefiscale"])['raw']["birthdate_year"].translate(_OMOCODIA_DECODE_TRANS)
+    birthdate_month = month.index(codicefiscale.decode(context["codicefiscale"])['raw']["birthdate_month"]) + 1
+    birthdate_day = int(codicefiscale.decode(context["codicefiscale"])['raw']["birthdate_day"].translate(_OMOCODIA_DECODE_TRANS))
+
+    if birthdate_day > 40:
+        birthdate_day -= 40
+        sex = "F"
+    else:
+        sex = "M"
+
+    current_year = datetime.now().year
+    birthdate_year_int = int("{}{}".format(str(current_year)[0:-2], birthdate_year))
+    if birthdate_year_int > current_year:
+        birthdate_year_int -= 100
+    birthdate_year = str(birthdate_year_int)
+    birthdate_str = "{}/{}/{}".format(birthdate_day, birthdate_month, birthdate_year)
+    
+    birthdate = datetime.strptime(birthdate_str, "%d/%m/%Y")
+
+    return birthdate
 
 # functions
 def convert_to_pdf(doc):
@@ -150,13 +196,12 @@ wb = xw.Book(excel)
 sht = wb.sheets['elenco']
 
 first_column = sht.range('A1').expand('down').value
-print(first_column)
+
 for i in range(len(sht.range('A1').expand('down').value)):
     if first_column[i] == 'nome':
         initial_row= i
 
 
-breakpoint()
 
 first_row = sht.range(f'A{str(initial_row+1)}:C{str(initial_row+1)}').value # sht.range('A1').expand('right').value # chiavi del dizionario
 value_range = sht.range(f'A{str(initial_row+2)}').expand('table').value # lista di rows dalla seconda
@@ -186,11 +231,16 @@ context = {"project":project, "release_date":release_date, "edition":edition, "c
 for i in range(len(value_range)):
     for j in range(len(first_row)):
         context[first_row[j].replace(" ", "")] = value_range[i][j]
-    context["data_nascita"] = str(codicefiscale.decode(context["codicefiscale"])['birthdate']).replace("-", "/").partition(" ")[0]
+    context["data_nascita"] = str(birth()).partition(" ")[0].replace("-", "/")
     context["citta"] = codicefiscale.decode(context["codicefiscale"])["birthplace"]["name"]
 
+    # decode birthday
+    # birthdate_year = codicefiscale.decode(context["codicefiscale"])['raw']['birthdate_year']
+    # birthdate_day = codicefiscale.decode(context["codicefiscale"])['raw']['birthdate_year']
+    # birthdate_month = month.index(codicefiscale.decode(context["codicefiscale"])['raw']['birthdate_year']) + 1
+
     # replace pic
-    print(logo, firma)
+    
     doc.replace_pic('Picture 13', logo) # logo
     doc.replace_pic('Picture 4', firma) # firma
 
