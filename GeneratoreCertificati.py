@@ -1,3 +1,4 @@
+from importlib.resources import path
 from codicefiscale import codicefiscale
 
 import os, sys
@@ -14,8 +15,8 @@ import win32com.client as win32
 # template = r'C:\Users\medlar\Desktop\progetto_gabellone\Attestato base logo SIF.docx'
 
 # base bianca
-logo = os.path.join(os.getcwd(), 'placeholder/bianco.png') 
-firma = os.path.join(os.getcwd(), 'placeholder/bianco.png') 
+logo = 'bianco.png'
+firma =  'bianco.png' 
 project = ""
 release_date= ""
 edition = ""
@@ -148,6 +149,14 @@ root.mainloop()
 wb = xw.Book(excel)
 sht = wb.sheets['elenco']
 
+# first_column = sht.range('A1').expand('down').value
+# print(first_column)
+# for i in range(len(sht.range('A1').expand('down').value)):
+#     if first_column[i] == 'nome':
+#         initial_row= i
+
+# breakpoint()
+
 first_row = sht.range('A1:C1').value # sht.range('A1').expand('right').value # chiavi del dizionario
 value_range = sht.range('A2').expand('table').value # lista di rows dalla seconda
 
@@ -185,7 +194,7 @@ for i in range(len(value_range)):
     doc.replace_pic('Picture 4', firma) # firma
 
     # save docx
-    output_name = f'{str(context["nome"])}_{str(context["cognome"])}_{str(context["project"])}_{str(context["edition"])}.docx' 
+    output_name = f'{str(context["nome"]).replace(" ", "")}_{str(context["cognome"])}_{str(context["project"])}_{str(context["edition"])}.docx' 
     doc.render(context)
     doc.save(output_name)
 
