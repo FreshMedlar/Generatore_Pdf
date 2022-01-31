@@ -28,8 +28,6 @@ inizio = ""
 fine  = ""
 corso= ""
 
-_CONSONANTS = list("bcdfghjklmnpqrstvwxyz")
-_VOWELS = list("aeiou")
 
 _OMOCODIA = {
     "0": "L",
