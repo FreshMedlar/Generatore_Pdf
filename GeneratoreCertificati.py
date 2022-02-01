@@ -48,7 +48,7 @@ def error_window(field): # show missing field
 # excel selection and dictionary
 def initial_function(excel):
 
-    word_gen, pdf_gen = 0, 0 # control the generation of excel and word
+    word_gen, pdf_gen = 1, 1 # control the generation of excel and word
 
     # open first sheet of excel and find the first valid row
     wb = xw.Book(excel)
