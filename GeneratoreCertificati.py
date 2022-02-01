@@ -1,21 +1,14 @@
-
 from codicefiscale import codicefiscale
 from datetime import datetime
 import os, sys
-
+import tkinter as tk
+from tkinter import messagebox
 from docxtpl import DocxTemplate # docx
 import xlwings as xw # excel 
 
-import tkinter as tk
-from tkinter.filedialog import askopenfilename
 import win32com.client as win32
 
-# os.chdir(sys.path[0])
-# excel = r'C:\Users\medlar\Desktop\progetto_gabellone\MODELLO FARC partecipanti_da_importare.xlsx'
-# template = r'C:\Users\medlar\Desktop\progetto_gabellone\Attestato base logo SIF.docx'
-
 template = "Attestato base logo SIF.docx"
-month = list("ABCDEHLMPRST")
 
 # base bianca
 logo = 'bianco.png'
@@ -28,48 +21,13 @@ inizio = ""
 fine  = ""
 corso= ""
 
+def birth_format(codice_fiscale): # obtain the birthdate and format it to dd/mm/yyyy
+    date = str(codicefiscale.decode(codice_fiscale)['birthdate']).partition(" ")[0].replace("-", "/").partition("/")
+    year = date[0]
+    month = date[2].partition('/')[0]
+    day = date[2].partition('/')[2]
+    return f'{day}/{month}/{year}'
 
-_OMOCODIA = {
-    "0": "L",
-    "1": "M",
-    "2": "N",
-    "3": "P",
-    "4": "Q",
-    "5": "R",
-    "6": "S",
-    "7": "T",
-    "8": "U",
-    "9": "V",
-}
-maketrans = "".maketrans
-_OMOCODIA_DIGITS = "".join([digit for digit in _OMOCODIA])
-_OMOCODIA_LETTERS = "".join([_OMOCODIA[digit] for digit in _OMOCODIA])
-_OMOCODIA_DECODE_TRANS = maketrans(_OMOCODIA_LETTERS, _OMOCODIA_DIGITS)
-
-def birth():
-    
-    birthdate_year = codicefiscale.decode(context["codicefiscale"])['raw']["birthdate_year"].translate(_OMOCODIA_DECODE_TRANS)
-    birthdate_month = month.index(codicefiscale.decode(context["codicefiscale"])['raw']["birthdate_month"]) + 1
-    birthdate_day = int(codicefiscale.decode(context["codicefiscale"])['raw']["birthdate_day"].translate(_OMOCODIA_DECODE_TRANS))
-
-    if birthdate_day > 40:
-        birthdate_day -= 40
-        sex = "F"
-    else:
-        sex = "M"
-
-    current_year = datetime.now().year
-    birthdate_year_int = int("{}{}".format(str(current_year)[0:-2], birthdate_year))
-    if birthdate_year_int > current_year:
-        birthdate_year_int -= 100
-    birthdate_year = str(birthdate_year_int)
-    birthdate_str = "{}/{}/{}".format(birthdate_day, birthdate_month, birthdate_year)
-    
-    birthdate = datetime.strptime(birthdate_str, "%d/%m/%Y")
-
-    return birthdate
-
-# functions
 def convert_to_pdf(doc):
     """Convert given word document to pdf"""
     word = win32.DispatchEx("Word.Application")
@@ -79,181 +37,90 @@ def convert_to_pdf(doc):
     worddoc.Close()
     return None
 
-def choose_excel():
-    global excel
-    excel = askopenfilename(parent= root, title="Modello base excel")
-    
-def choose_word():
-    global template
-    template = askopenfilename(parent = root, title="Modello base word")   
+def error_window(field): # show missing field 
+    if len(field) == 1:
+        messagebox.showerror('Error', f'Campo {field} mancante')
+    else:
+        messagebox.showerror('Error', 'Molteplici campi mancanti')
 
-def choose_logo():
-    global logo
-    logo = askopenfilename(parent = root, title = "Logo eventuale")
 
-def choose_firma():
-    global firma
-    firma = askopenfilename(parent = root, title = "Firma eventuale")
-
-def confirm_project():
-    global project 
-    global release_date
-    global edition 
-    global durata
-    global inizio 
-    global fine 
-    global corso
-    project = entry_project.get()
-    release_date = entry_release_date.get()
-    edition = entry_edition.get()
-    durata = entry_durata.get()
-    inizio = entry_inizio.get()
-    fine = entry_fine.get()
-    corso = entry_corso.get()
-
-# GUI
-root = tk.Tk()
-
-canvas = tk.Canvas(root, width=500, height = 400)
-canvas.grid(columnspan = 8, rowspan = 9)
-
-# button excel
-excel_str = tk.StringVar()
-excel_btn = tk.Button(root, textvariable= excel_str, command=lambda:choose_excel())
-excel_str.set("Excel")
-excel_btn.grid(column=0, row=0)
-
-# button word
-word_str = tk.StringVar()
-word_btn = tk.Button(root, textvariable= word_str, command=lambda:choose_word())
-word_str.set("Word")
-word_btn.grid(column=0, row=1)
-
-# button logo
-logo_str = tk.StringVar()
-logo_btn = tk.Button(root, textvariable= logo_str, command=lambda:choose_logo())
-logo_str.set("logo")
-logo_btn.grid(column=0, row=2)
-
-# button firma
-firma_str = tk.StringVar()
-firma_btn = tk.Button(root, textvariable= firma_str, command=lambda:choose_firma())
-firma_str.set("firma")
-firma_btn.grid(column=0, row=3)
-
-# entry codice progetto
-entry_project = tk.Entry(root)
-entry_project.grid(column=2, row=0)
-project_lbl = tk.Label(root, text="Progetto")
-project_lbl.grid(column=1, row=0)
-
-# entry edizione
-entry_edition = tk.Entry(root)
-entry_edition.grid(column=2, row=1)
-edition_lbl = tk.Label(root, text="Edizione")
-edition_lbl.grid(column=1, row=1)
-
-# entry data rilascio
-entry_release_date = tk.Entry(root)
-entry_release_date.grid(column=2, row=2)
-release_lbl = tk.Label(root, text="Data di rilascio")
-release_lbl.grid(column=1, row=2)
-
-# entry corso
-entry_corso = tk.Entry(root)
-entry_corso.grid(column=2, row=3)
-corso_lbl = tk.Label(root, text="Nome Corso")
-corso_lbl.grid(column=1, row=3)
-
-# entry durata
-entry_durata = tk.Entry(root)
-entry_durata.grid(column=2, row=4)
-durata_lbl = tk.Label(root, text="Durata")
-durata_lbl.grid(column=1, row=4)
-
-# entry inizio
-entry_inizio = tk.Entry(root)
-entry_inizio.grid(column=2, row=5)
-inizio_lbl = tk.Label(root, text="Data inizio corso")
-inizio_lbl.grid(column=1, row=5)
-
-# entry fine
-entry_fine = tk.Entry(root)
-entry_fine.grid(column=2, row=6)
-fine_lbl = tk.Label(root, text="Data fine corso")
-fine_lbl.grid(column=1, row=6)
-
-# button confirm
-entry_btn = tk.Button(root, text= "conferma", command= confirm_project)
-entry_btn.grid(column=0, row=7)
-
-root.mainloop()
 
 # excel selection and dictionary
-wb = xw.Book(excel)
-sht = wb.sheets['elenco']
+def initial_function(excel):
 
-first_column = sht.range('A1').expand('down').value
+    word_gen, pdf_gen = 0, 0 # control the generation of excel and word
 
-for i in range(len(sht.range('A1').expand('down').value)):
-    if first_column[i] == 'nome':
-        initial_row= i
+    # open first sheet of excel and find the first valid row
+    wb = xw.Book(excel)
+    sht = wb.sheets[0]
 
-
-
-first_row = sht.range(f'A{str(initial_row+1)}:C{str(initial_row+1)}').value # sht.range('A1').expand('right').value # chiavi del dizionario
-value_range = sht.range(f'A{str(initial_row+2)}').expand('table').value # lista di rows dalla seconda
-
-## 0-nome
-## 1-cognome
-## 2-codice fiscale
-# 3-codice cittadinanza
-# 4-codice livello studio
-# 5-codice tipologia contrattuale
-# 6-codice ccnl
-# 7-codice inquadramento
-# 8-anno anzianità
-# 9-Assunzione ai sensi ex lege 68/99
-# 10-cellulare
-# 11-matricola INPS
-# 12-cap (aggiornato)
-# 13-città di residenza
-# 14-indirizzo residenza
-# 15-email
-# 16-costo orario lordo azienda
-
-doc = DocxTemplate(template)
-context = {"project":project, "release_date":release_date, "edition":edition, "corso":corso, "durata":durata, "inizio":inizio, "fine":fine}
-
-
-for i in range(len(value_range)):
-    for j in range(len(first_row)):
-        context[first_row[j].replace(" ", "")] = value_range[i][j]
-    context["data_nascita"] = str(birth()).partition(" ")[0].replace("-", "/")
-    context["citta"] = codicefiscale.decode(context["codicefiscale"])["birthplace"]["name"]
-
-    # decode birthday
-    # birthdate_year = codicefiscale.decode(context["codicefiscale"])['raw']['birthdate_year']
-    # birthdate_day = codicefiscale.decode(context["codicefiscale"])['raw']['birthdate_year']
-    # birthdate_month = month.index(codicefiscale.decode(context["codicefiscale"])['raw']['birthdate_year']) + 1
-
-    # replace pic
+    # finding the row with "nome" in it, where data start
+    first_column = sht.range('A1').expand('table').value
     
-    doc.replace_pic('Picture 13', logo) # logo
-    doc.replace_pic('Picture 4', firma) # firma
+    print(first_column)
+    for row in range(len(first_column)):
+        for cell in range(len(first_column[row])):
+            if first_column[row][cell] == 'nome':
+                initial_row = row
+                initial_column = cell
 
-    # save docx
-    output_name = f'{str(context["nome"]).replace(" ", "")}_{str(context["cognome"])}_{str(context["project"])}_{str(context["edition"])}.docx' 
-    doc.render(context)
-    doc.save(output_name)
-
-    # Convert to PDF
-    path_word = os.path.join(os.getcwd(), output_name)
-    convert_to_pdf(path_word)
     
+    first_column_address = xw.Range(f'A{str(initial_row+2)}').expand("down").get_address(False, False)
 
+    first_row = sht.range(f'A{str(initial_row+1)}').expand("right").value # chiavi del dizionario
+    
+    value_range = sht.range(f'A{str(initial_row+2)}').expand('table').value # all value
 
-# name and save 
-# output_name = 'prova.docx' # f'{str(context["nome"])}_{str(context["cognome"])}_progetto_edizione_.docx'  # f'{str(context[list(context.keys())[0]])}_{str(context[list(context.keys())[1]])}_progetto_edizione_.docx'
-# doc.render(context)
-# doc.save(output_name)
+    # 0-nome
+    # 1-cognome
+    # 2-codice fiscale
+    # 3-codice cittadinanza
+    # 4-codice livello studio
+    # 5-codice tipologia contrattuale
+    # 6-codice ccnl
+    # 7-codice inquadramento
+    # 8-anno anzianità
+    # 9-Assunzione ai sensi ex lege 68/99
+    # 10-cellulare
+    # 11-matricola INPS
+    # 12-cap (aggiornato)
+    # 13-città di residenza
+    # 14-indirizzo residenza
+    # 15-email
+    # 16-costo orario lordo azienda
+
+    doc = DocxTemplate(template)
+    context = {"project":project, "release_date":release_date, "edition":edition, "corso":corso, "durata":durata, "inizio":inizio, "fine":fine}
+    missing_field = []
+
+    for i in range(len(value_range)):
+        for j in range(len(first_row)):
+            try:
+                context[first_row[j].replace(" ", "")] = value_range[i][j]
+            except IndexError:
+                context[first_row[j].replace(" ", "")] = ""
+
+        # report missing field
+        missing_field.append(first_row[j])
+        error_window(missing_field)
+
+        context["data_nascita"] = birth_format(context["codicefiscale"])
+        context["citta"] = codicefiscale.decode(context["codicefiscale"])["birthplace"]["name"]
+
+        # replace pic
+        doc.replace_pic('Picture 13', logo) # logo
+        doc.replace_pic('Picture 4', firma) # firma
+
+        # save docx
+        output_name = f'{str(context["nome"]).replace(" ", "")}_{str(context["cognome"])}_{str(context["project"])}_{str(context["edition"])}.docx' # emanuele_segatori_project_edtition.docx
+        doc.render(context)
+        if word_gen:
+            doc.save(output_name)
+
+        # Convert to PDF
+        path_word = os.path.join(os.getcwd(), output_name)
+        if pdf_gen:
+            convert_to_pdf(path_word)
+
+if 0:
+    initial_function("additional material/MODELLO FARC partecipanti_da_importare.xlsx")
