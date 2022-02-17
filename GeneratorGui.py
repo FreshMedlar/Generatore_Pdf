@@ -15,6 +15,10 @@ import os, sys
 
 generate_file = True
 
+# def save_setting(field):
+#     f = open('setting.txt', 'w')
+#     f.write('')
+
 def confirm_project():
     global project 
     global release_date

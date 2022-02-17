@@ -21,6 +21,7 @@ inizio = ""
 fine  = ""
 corso= ""
 
+
 def birth_format(codice_fiscale): # obtain the birthdate and format it to dd/mm/yyyy
     date = str(codicefiscale.decode(codice_fiscale)['birthdate']).partition(" ")[0].replace("-", "/").partition("/")
     year = date[0]
@@ -57,7 +58,7 @@ def initial_function(excel):
     # finding the row with "nome" in it, where data start
     first_column = sht.range('A1').expand('table').value
     
-    print(first_column)
+    
     for row in range(len(first_column)):
         for cell in range(len(first_column[row])):
             if first_column[row][cell] == 'nome':
@@ -93,6 +94,11 @@ def initial_function(excel):
     context = {"project":project, "release_date":release_date, "edition":edition, "corso":corso, "durata":durata, "inizio":inizio, "fine":fine}
     missing_field = []
 
+    # folder creation
+    path = os.getcwd()+f"\Attestati P{context['project']} Ed{context['edition']}"
+    if not(os.path.exists(path)):
+        os.mkdir(path)
+
     for i in range(len(value_range)):
         for j in range(len(first_row)):
             try:
@@ -101,8 +107,8 @@ def initial_function(excel):
                 context[first_row[j].replace(" ", "")] = ""
 
         # report missing field
-        missing_field.append(first_row[j])
-        error_window(missing_field)
+        # missing_field.append(first_row[j])
+        # error_window(missing_field)
 
         context["data_nascita"] = birth_format(context["codicefiscale"])
         context["citta"] = codicefiscale.decode(context["codicefiscale"])["birthplace"]["name"]
@@ -112,13 +118,14 @@ def initial_function(excel):
         doc.replace_pic('Picture 4', firma) # firma
 
         # save docx
-        output_name = f'{str(context["nome"]).replace(" ", "")}_{str(context["cognome"])}_{str(context["project"])}_{str(context["edition"])}.docx' # emanuele_segatori_project_edtition.docx
+        output_name = f'{path}\{str(context["nome"]).replace(" ", "")}_{str(context["cognome"])}_{str(context["project"])}_{str(context["edition"])}.docx' # emanuele_segatori_project_edtition.docx
         doc.render(context)
         if word_gen:
             doc.save(output_name)
 
         # Convert to PDF
         path_word = os.path.join(os.getcwd(), output_name)
+        
         if pdf_gen:
             convert_to_pdf(path_word)
 
