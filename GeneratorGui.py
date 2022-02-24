@@ -7,6 +7,7 @@ import xlwings as xw # excel
 # GUI
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
+from tkinter import messagebox
 # PDF
 import win32com.client as win32
 
@@ -19,6 +20,10 @@ generate_file = True
 #     f = open('setting.txt', 'w')
 #     f.write('')
 
+def error_window(field): # show missing field 
+    messagebox.showerror('Error', f'Campo {field} mancante')
+
+        
 def confirm_project():
     global project 
     global release_date
@@ -34,8 +39,12 @@ def confirm_project():
     inizio = entry_inizio.get()
     fine = entry_fine.get()
     corso = entry_corso.get()
-    if generate_file:
-        gen.initial_function(excel)
+    if os.path.isfile(template):
+        if generate_file:
+            gen.initial_function(excel)
+    else:
+        error_window("Documento word")
+
 
 def choose_excel():
     global excel
