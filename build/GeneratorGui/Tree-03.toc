@@ -1,6 +1,6 @@
 ('c:\\users\\medlar\\appdata\\local\\programs\\python\\python310\\lib\\site-packages\\pyinstaller-4.8-py3.10.egg',
  None,
- {'*.pyw', '*.pyc', '*.py', '*.cp310-win_amd64.pyd', 'EGG-INFO', '*.pyd'},
+ {'*.pyd', '*.pyw', '*.pyc', 'EGG-INFO', '*.cp310-win_amd64.pyd', '*.py'},
  'DATA',
  [('PyInstaller\\lib\\README.rst',
    'c:\\users\\medlar\\appdata\\local\\programs\\python\\python310\\lib\\site-packages\\pyinstaller-4.8-py3.10.egg\\PyInstaller\\lib\\README.rst',
