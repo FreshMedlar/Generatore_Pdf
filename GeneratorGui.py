@@ -15,6 +15,9 @@ import GeneratoreCertificati as gen
 import os, sys
 
 generate_file = True
+global template 
+template = "Attestato base logo SIF.docx"
+
 
 # def save_setting(field):
 #     f = open('setting.txt', 'w')
@@ -41,7 +44,7 @@ def confirm_project():
     corso = entry_corso.get()
     if os.path.isfile(template):
         if generate_file:
-            gen.initial_function(excel)
+            gen.initial_function(excel, project, edition, durata, inizio, fine, corso, template)
     else:
         error_window("Documento word")
 
@@ -51,7 +54,6 @@ def choose_excel():
     excel = askopenfilename(parent= root, title="Modello base excel")
     
 def choose_word():
-    global template
     template = askopenfilename(parent = root, title="Modello base word")   
 
 def choose_logo():

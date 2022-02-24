@@ -8,7 +8,6 @@ import xlwings as xw # excel
 
 import win32com.client as win32
 
-template = "Attestato base logo SIF.docx"
 
 # base bianca
 logo = 'bianco.png'
@@ -47,7 +46,7 @@ def error_window(field): # show missing field
 
 
 # excel selection and dictionary
-def initial_function(excel):
+def initial_function(excel, project, edition, durata, inizio, fine, corso, template):
 
     word_gen, pdf_gen = 1, 1 # control the generation of excel and word
 
