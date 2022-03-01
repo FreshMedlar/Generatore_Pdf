@@ -44,7 +44,7 @@ def confirm_project():
     corso = entry_corso.get()
     if os.path.isfile(template):
         if generate_file:
-            gen.initial_function(excel, project, edition, durata, inizio, fine, corso, template)
+            gen.initial_function(excel, project, release_date, edition, durata, inizio, fine, corso, template)
     else:
         error_window("Documento word")
 
@@ -106,7 +106,7 @@ entry_edition.grid(column=2, row=1)
 edition_lbl = tk.Label(root, text="Edizione")
 edition_lbl.grid(column=1, row=1)
 
-# entry data rilascio
+# entry release_date
 entry_release_date = tk.Entry(root)
 entry_release_date.grid(column=2, row=2)
 release_lbl = tk.Label(root, text="Data di rilascio")

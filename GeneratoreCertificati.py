@@ -46,7 +46,7 @@ def error_window(field): # show missing field
 
 
 # excel selection and dictionary
-def initial_function(excel, project, edition, durata, inizio, fine, corso, template):
+def initial_function(excel, project, release_date, edition, durata, inizio, fine, corso, template):
 
     word_gen, pdf_gen = 1, 1 # control the generation of excel and word
 
