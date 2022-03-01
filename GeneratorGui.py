@@ -29,14 +29,14 @@ def error_window(field): # show missing field
         
 def confirm_project():
     global project 
-    global release_date
+    global data_rilascio
     global edition 
     global durata
     global inizio 
     global fine 
     global corso
     project = entry_project.get()
-    release_date = entry_release_date.get()
+    data_rilascio = entry_data_rilascio.get()
     edition = entry_edition.get()
     durata = entry_durata.get()
     inizio = entry_inizio.get()
@@ -44,7 +44,7 @@ def confirm_project():
     corso = entry_corso.get()
     if os.path.isfile(template):
         if generate_file:
-            gen.initial_function(excel, project, release_date, edition, durata, inizio, fine, corso, template)
+            gen.initial_function(excel, project, data_rilascio, edition, durata, inizio, fine, corso, template, firma, logo)
     else:
         error_window("Documento word")
 
@@ -106,9 +106,9 @@ entry_edition.grid(column=2, row=1)
 edition_lbl = tk.Label(root, text="Edizione")
 edition_lbl.grid(column=1, row=1)
 
-# entry release_date
-entry_release_date = tk.Entry(root)
-entry_release_date.grid(column=2, row=2)
+# entry data_rilascio
+entry_data_rilascio = tk.Entry(root)
+entry_data_rilascio.grid(column=2, row=2)
 release_lbl = tk.Label(root, text="Data di rilascio")
 release_lbl.grid(column=1, row=2)
 

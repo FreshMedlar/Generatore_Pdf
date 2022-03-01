@@ -13,7 +13,7 @@ import win32com.client as win32
 logo = 'bianco.png'
 firma =  'bianco.png' 
 project = ""
-release_date= ""
+data_rilascio= ""
 edition = ""
 durata= ""
 inizio = ""
@@ -46,7 +46,7 @@ def error_window(field): # show missing field
 
 
 # excel selection and dictionary
-def initial_function(excel, project, release_date, edition, durata, inizio, fine, corso, template):
+def initial_function(excel, project, data_rilascio, edition, durata, inizio, fine, corso, template, firma, logo):
 
     word_gen, pdf_gen = 1, 1 # control the generation of excel and word
 
@@ -90,7 +90,7 @@ def initial_function(excel, project, release_date, edition, durata, inizio, fine
     # 16-costo orario lordo azienda
 
     doc = DocxTemplate(template)
-    context = {"project":project, "release_date":release_date, "edition":edition, "corso":corso, "durata":durata, "inizio":inizio, "fine":fine}
+    context = {"project":project, "data_rilascio":data_rilascio, "edition":edition, "corso":corso, "durata":durata, "inizio":inizio, "fine":fine}
     missing_field = []
 
     # folder creation
