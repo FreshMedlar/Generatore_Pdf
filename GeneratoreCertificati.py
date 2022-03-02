@@ -13,7 +13,7 @@ import win32com.client as win32
 logo = 'bianco.png'
 firma =  'bianco.png' 
 project = ""
-data_rilascio= ""
+release_date= ""
 edition = ""
 durata= ""
 inizio = ""
@@ -46,7 +46,7 @@ def error_window(field): # show missing field
 
 
 # excel selection and dictionary
-def initial_function(excel, project, data_rilascio, edition, durata, inizio, fine, corso, template, firma, logo):
+def initial_function(excel, project, release_date, edition, durata, inizio, fine, corso, template, firma, logo):
 
     word_gen, pdf_gen = 1, 1 # control the generation of excel and word
 
@@ -90,7 +90,7 @@ def initial_function(excel, project, data_rilascio, edition, durata, inizio, fin
     # 16-costo orario lordo azienda
 
     doc = DocxTemplate(template)
-    context = {"project":project, "data_rilascio":data_rilascio, "edition":edition, "corso":corso, "durata":durata, "inizio":inizio, "fine":fine}
+    context = {"project":project, "release_date":release_date, "edition":edition, "corso":corso, "durata":durata, "inizio":inizio, "fine":fine}
     missing_field = []
 
     # folder creation
@@ -115,7 +115,7 @@ def initial_function(excel, project, data_rilascio, edition, durata, inizio, fin
         # replace pic
         doc.replace_pic('Picture 13', logo) # logo
         doc.replace_pic('Picture 4', firma) # firma
-
+        
         # save docx
         output_name = f'{path}\{str(context["nome"]).replace(" ", "")}_{str(context["cognome"])}_{str(context["project"])}_{str(context["edition"])}.docx' # emanuele_segatori_project_edtition.docx
         doc.render(context)
