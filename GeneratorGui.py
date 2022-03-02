@@ -16,7 +16,11 @@ import os, sys
 
 generate_file = True
 global template 
+global firma
+global logo
 template = "Attestato base logo SIF.docx"
+firma = "bianco.png"
+logo = "bianco.png"
 
 
 # def save_setting(field):
@@ -35,6 +39,9 @@ def confirm_project():
     global inizio 
     global fine 
     global corso
+    global firma
+    global logo
+    
     project = entry_project.get()
     data_rilascio = entry_data_rilascio.get()
     edition = entry_edition.get()
@@ -45,6 +52,8 @@ def confirm_project():
     if os.path.isfile(template):
         if generate_file:
             gen.initial_function(excel, project, data_rilascio, edition, durata, inizio, fine, corso, template, firma, logo)
+            firma = "bianco.png" 
+            logo = "bianco.png"
     else:
         error_window("Documento word")
 
@@ -54,6 +63,7 @@ def choose_excel():
     excel = askopenfilename(parent= root, title="Modello base excel")
     
 def choose_word():
+    global template
     template = askopenfilename(parent = root, title="Modello base word")   
 
 def choose_logo():

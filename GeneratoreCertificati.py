@@ -127,6 +127,7 @@ def initial_function(excel, project, data_rilascio, edition, durata, inizio, fin
         
         if pdf_gen:
             convert_to_pdf(path_word)
+    
 
 if 0:
     initial_function("additional material/MODELLO FARC partecipanti_da_importare.xlsx")
