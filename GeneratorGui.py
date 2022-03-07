@@ -18,10 +18,13 @@ generate_file = True
 global template 
 global firma
 global logo
+global template_attestati
+global template_materiali
 template = "Attestato base logo SIF.docx"
 firma = "bianco.png"
 logo = "bianco.png"
-
+template_attestati = "Distinta consegna attestati Logo SIF.docx"
+template_materiali = "Distinta consegna materiali Logo SIF.docx"
 
 # def save_setting(field):
 #     f = open('setting.txt', 'w')
@@ -29,7 +32,6 @@ logo = "bianco.png"
 
 def error_window(field): # show missing field 
     messagebox.showerror('Error', f'Campo {field} mancante')
-
         
 def confirm_project():
     global project 
@@ -51,7 +53,7 @@ def confirm_project():
     corso = entry_corso.get()
     if os.path.isfile(template):
         if generate_file:
-            gen.initial_function(excel, project, release_date, edition, durata, inizio, fine, corso, template, firma, logo)
+            gen.initial_function(excel, project, release_date, edition, durata, inizio, fine, corso, template, firma, logo) #, template_attestati, template_materiali)
             firma = "bianco.png" 
             logo = "bianco.png"
     else:
